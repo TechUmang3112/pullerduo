@@ -1,6 +1,6 @@
 // Imports
 import { AuthService } from './auth.service';
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
 @Controller('auth')
 export class AuthController {
@@ -20,4 +20,15 @@ export class AuthController {
   task2(): string {
     return this.authService.task2();
   }
+
+  @Post('signUp')
+  async funSignUp(@Body() body) {
+    return await this.authService.signUp(body);
+  }
+
+  @Post('validateOtp')
+  async funValidateOtp(@Body() body) {
+return await this.authService.validateOtp(body);
+  }
+
 }

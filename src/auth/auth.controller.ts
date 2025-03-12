@@ -28,7 +28,16 @@ export class AuthController {
 
   @Post('validateOtp')
   async funValidateOtp(@Body() body) {
-return await this.authService.validateOtp(body);
+    return await this.authService.validateOtp(body);
   }
 
+  @Post('forgotpassword')
+  async funForgotpassword(@Body() body) {
+    return await this.authService.forgotpassword(body);
+  }
+
+  @Post('validateOTPForForgetPassword')
+  async funvalidateOTPForForgotpassword(@Body() body) {
+    return await this.authService.validateOTPForForgetPassword(body);
+  }
 }

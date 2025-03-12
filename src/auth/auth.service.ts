@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
+let total_emails: string[] = [];
+
 @Injectable()
 export class AuthService {
   getHello(): string {
@@ -15,13 +17,22 @@ export class AuthService {
   }
 
   async signUp(reqData) {
-    const email = reqData.email;
+    const email: string = reqData.email;
     if (!email) return { valid: false, error_msg: 'Please enter valid email' };
     const password = reqData.password;
     if (!password)
       return { valid: false, error_msg: 'Please enter valid password' };
+    if (password < 6) 
+      return { valid: false, error_msg: 'password must be 6 digit or more'};
+    if (!/[a-z]/.test(password) || !/[A-Z]/.test(password))  
+      return { valid: false, error_msg: 'password must contain both uppercase and lowercase letters' };
 
-    return { valid: true };
+    
+    if (total_emails.includes(email)) return {valid: false, error_msg: "Email is already exists !"}
+    
+    total_emails.push(email);
+
+    return { valid: true, total_emails };
   }
 
   async validateOtp(reqData) {
@@ -33,5 +44,15 @@ export class AuthService {
     }
 
     return { valid: true };
+  }
+
+  async forgotpassword(reqData) {
+    const otp = reqData.otp;
+
+  }
+  
+  async validateOTPForForgetPassword(reqData) {
+    
+
   }
 }

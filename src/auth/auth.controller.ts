@@ -6,21 +6,6 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
- @Get('test')
-  getHello(): string {
-    return this.authService.getHello();
-  } 
-
-  @Get('task1')
-  task1(): string {
-    return this.authService.task1();
-  }
-
-  @Get('task2')
-  task2(): string {
-    return this.authService.task2();
-  }
-
   @Post('signUp')
   async funSignUp(@Body() body) {
     return await this.authService.signUp(body);
@@ -39,5 +24,10 @@ export class AuthController {
   @Post('validateOTPForForgetPassword')
   async funvalidateOTPForForgotpassword(@Body() body) {
     return await this.authService.validateOTPForForgetPassword(body);
+  }
+
+  @Post('login')
+  async funLogIn(@Body() body) {
+    return await this.authService.login(body);
   }
 }

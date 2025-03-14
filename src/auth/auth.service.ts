@@ -1,8 +1,8 @@
 // Imports
+import { MongoService } from 'src/db/mongo';
 import { HTTPError } from 'src/configs/error';
 import { StrService } from 'src/utils/str.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { MongoService } from 'src/db/mongo';
 
 @Injectable()
 export class AuthService {
@@ -72,6 +72,8 @@ export class AuthService {
         message: 'Invalid OTP, Please try again later',
       });
     }
+
+    await this.mongo.updateOne('User', { email }, { isEmailVerified: true });
 
     return { message: 'OTP verified succefully !' };
   }
@@ -148,7 +150,7 @@ export class AuthService {
         message: 'password must contain both uppercase and lowercase letters',
       });
 
-    const existingData = await this.mongo.findOne('User', {email})
+    const existingData = await this.mongo.findOne('User', { email });
     if (!existingData) {
       throw HTTPError({
         statusCode: HttpStatus.BAD_REQUEST,
@@ -163,6 +165,15 @@ export class AuthService {
       });
     }
 
-    return { message: 'Login successful' };
+    // New OTP
+    if (!existingData.isEmailVerified) {
+      const otp = this.strService.generateOTP({ length: 4 });
+      await this.mongo.updateOne('User', { email }, { otp });
+    }
+
+    return {
+      isEmailVerified: existingData.isEmailVerified,
+      message: 'Login successful',
+    };
   }
 }

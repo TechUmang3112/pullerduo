@@ -2,13 +2,14 @@
 import { HTTPError } from 'src/configs/error';
 import { StrService } from 'src/utils/str.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
-
-let total_emails: string[] = [];
-let total_accounts: { email: string; password: string; otp: string }[] = [];
+import { MongoService } from 'src/db/mongo';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly strService: StrService) {}
+  constructor(
+    private readonly mongo: MongoService,
+    private readonly strService: StrService,
+  ) {}
 
   getHello(): string {
     return 'Hey there i am umang, calling from auth module test endpoint';
@@ -29,22 +30,21 @@ export class AuthService {
         message: 'password must contain both uppercase and lowercase letters',
       });
 
-    if (total_emails.includes(email)) {
+    const existingData = await this.mongo.findOne('User', { email });
+    if (existingData) {
       throw HTTPError({
         message: 'Email is already exists',
         statusCode: HttpStatus.CONFLICT,
       });
     }
 
-    total_emails.push(email);
     const otp = this.strService.generateOTP({ length: 4 });
-    total_accounts.push({ email, password, otp });
+    await this.mongo.insert('User', { email, password, otp });
 
     return {
       message:
         'Account created successfuly! OTP has been sent on your email - ' +
         email,
-      otp,
     };
   }
 
@@ -58,7 +58,7 @@ export class AuthService {
       throw HTTPError({ value: 'email' });
     email = email.toLowerCase();
 
-    const existingData = total_accounts.find((el) => el.email == email);
+    const existingData = await this.mongo.findOne('User', { email });
     if (!existingData) {
       throw HTTPError({
         statusCode: HttpStatus.BAD_REQUEST,
@@ -83,8 +83,8 @@ export class AuthService {
       throw HTTPError({ value: 'email' });
     email = email.toLowerCase();
 
-    const index = total_accounts.findIndex((el) => el.email == email);
-    if (index == -1) {
+    const existingData = await this.mongo.findOne('User', { email });
+    if (!existingData) {
       throw HTTPError({
         statusCode: HttpStatus.BAD_REQUEST,
         message: 'Email not exist, Please try sign up instead.',
@@ -92,8 +92,9 @@ export class AuthService {
     }
 
     const otp = this.strService.generateOTP({ length: 4 });
-    total_accounts[index].otp = otp;
-    return { otp, message: 'OTP sent for forgot password' };
+    await this.mongo.updateOne('User', { email }, { otp });
+
+    return { message: 'OTP sent for forgot password' };
   }
 
   async validateOTPForForgetPassword(reqData) {
@@ -114,22 +115,21 @@ export class AuthService {
         message: 'password must contain both uppercase and lowercase letters',
       });
 
-    const index = total_accounts.findIndex((el) => el.email == email);
-    if (index == -1) {
+    const existingData = await this.mongo.findOne('User', { email });
+    if (!existingData) {
       throw HTTPError({
         statusCode: HttpStatus.BAD_REQUEST,
         message: 'Email not exist, Please try sign up instead.',
       });
     }
 
-    if (otp != total_accounts[index].otp) {
+    if (otp != existingData.otp) {
       throw HTTPError({
         statusCode: HttpStatus.BAD_REQUEST,
         message: 'Invalid OTP, Please try again later',
       });
     }
 
-    total_accounts[index].password = password;
     return { message: 'Password changed successfully !' };
   }
 
@@ -148,7 +148,7 @@ export class AuthService {
         message: 'password must contain both uppercase and lowercase letters',
       });
 
-    const existingData = total_accounts.find((el) => el.email == email);
+    const existingData = await this.mongo.findOne('User', {email})
     if (!existingData) {
       throw HTTPError({
         statusCode: HttpStatus.BAD_REQUEST,
@@ -163,6 +163,6 @@ export class AuthService {
       });
     }
 
-    return { message: "Login successful" };
+    return { message: 'Login successful' };
   }
 }

@@ -33,7 +33,13 @@ export class User {
   type: number;
 
   @Prop({ default: false })
+  isAadhaarApproved: boolean;
+
+  @Prop({ default: false })
   isDriverLicenceApproved: boolean;
+
+  @Prop()
+  fileDocId: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

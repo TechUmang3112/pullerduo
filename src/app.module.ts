@@ -7,6 +7,8 @@ import { UtilsModule } from './utils/utils.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './db/models/user.model';
+import { UserModule } from './user/user.module';
+import { FileDoc, FileDocSchema } from './db/models/file.model';
 
 @Global()
 @Module({
@@ -24,8 +26,10 @@ import { User, UserSchema } from './db/models/user.model';
       }),
     }),
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([{ name: FileDoc.name, schema: FileDocSchema }]),
     AuthModule,
     UtilsModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

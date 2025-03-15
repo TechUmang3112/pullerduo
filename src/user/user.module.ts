@@ -1,11 +1,11 @@
 // Imports
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
-import { StrService } from 'src/utils/str.service';
+import { UserService } from './user.service';
+import { UserController } from './user.controller';
+import { MongoService } from 'src/db/mongo';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/db/models/user.model';
-import { MongoService } from 'src/db/mongo';
+import { FileService } from 'src/utils/file.service';
 import { FileDoc, FileDocSchema } from 'src/db/models/file.model';
 
 @Module({
@@ -13,7 +13,7 @@ import { FileDoc, FileDocSchema } from 'src/db/models/file.model';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     MongooseModule.forFeature([{ name: FileDoc.name, schema: FileDocSchema }]),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, MongoService, StrService],
+  controllers: [UserController],
+  providers: [FileService, MongoService, UserService],
 })
-export class AuthModule {}
+export class UserModule {}

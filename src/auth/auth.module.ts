@@ -3,16 +3,11 @@ import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { StrService } from 'src/utils/str.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/db/models/user.model';
 import { MongoService } from 'src/db/mongo';
-import { FileDoc, FileDocSchema } from 'src/db/models/file.model';
+import { mongoModels } from 'src/db/models/inject.mongo.models';
 
 @Module({
-  imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    MongooseModule.forFeature([{ name: FileDoc.name, schema: FileDocSchema }]),
-  ],
+  imports: [...mongoModels],
   controllers: [AuthController],
   providers: [AuthService, MongoService, StrService],
 })

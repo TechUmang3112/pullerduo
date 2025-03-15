@@ -6,9 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import { UtilsModule } from './utils/utils.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './db/models/user.model';
 import { UserModule } from './user/user.module';
-import { FileDoc, FileDocSchema } from './db/models/file.model';
+import { DriverModule } from './driver/driver.module';
+import { mongoModels } from './db/models/inject.mongo.models';
+import { ThirdPartyModule } from './thirdParty/third.party.module';
 
 @Global()
 @Module({
@@ -25,9 +26,10 @@ import { FileDoc, FileDocSchema } from './db/models/file.model';
         tlsAllowInvalidCertificates: false, // Do not allow invalid certificates
       }),
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    MongooseModule.forFeature([{ name: FileDoc.name, schema: FileDocSchema }]),
+    ...mongoModels,
     AuthModule,
+    DriverModule,
+    ThirdPartyModule,
     UtilsModule,
     UserModule,
   ],

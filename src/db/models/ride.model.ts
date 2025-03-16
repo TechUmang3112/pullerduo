@@ -10,6 +10,12 @@ export class Ride {
   driverId: string;
 
   @Prop()
+  riderId: string;
+
+  @Prop({ comment: '0 -> Male, 1 -> Female' })
+  gender: number;
+
+  @Prop()
   rideTime: Date;
 
   @Prop()
@@ -47,6 +53,7 @@ export class Ride {
 
   @Prop({
     comment: `-1 -> Offered by driver, 
+      -2 -> Ride accepted by rider,
       0 -> Ride started by driver, 
       1 -> Ride Rejected by admin,
       2 -> Ride Rejected by system due to no passenger available,

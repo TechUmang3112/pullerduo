@@ -129,6 +129,7 @@ export class DriverService {
     }
 
     const creationData = {
+      gender: userData.gender,
       driverId: userId,
       rideTime,
       rideEndTime,

@@ -10,6 +10,7 @@ import { UserModule } from './user/user.module';
 import { DriverModule } from './driver/driver.module';
 import { mongoModels } from './db/models/inject.mongo.models';
 import { ThirdPartyModule } from './thirdParty/third.party.module';
+import { RiderModule } from './rider/rider.module';
 
 @Global()
 @Module({
@@ -29,6 +30,7 @@ import { ThirdPartyModule } from './thirdParty/third.party.module';
     ...mongoModels,
     AuthModule,
     DriverModule,
+    RiderModule,
     ThirdPartyModule,
     UtilsModule,
     UserModule,

@@ -61,11 +61,18 @@ export class UserService {
       throw HTTPError({ parameter: 'name' });
     }
     const type = reqData.type;
-    if (!type) {
+    if (type == null || type == undefined) {
       throw HTTPError({ parameter: 'type' });
     }
     if (type != '0' && type != '1') {
       throw HTTPError({ value: 'type' });
+    }
+    const gender = reqData.gender;
+    if (gender == null || type == undefined) {
+      throw HTTPError({ parameter: 'gender' });
+    }
+    if (gender != '1' && gender != '0') {
+      throw HTTPError({ value: 'gender' });
     }
 
     const userData = await this.mongo.findOne('User', { _id: userId });
@@ -90,7 +97,7 @@ export class UserService {
     await this.mongo.updateOne(
       'User',
       { _id: userId },
-      { fileDocId, name, type },
+      { gender, fileDocId, name, type },
     );
 
     return {};

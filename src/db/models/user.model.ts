@@ -10,6 +10,9 @@ export class User {
   @Prop()
   name: string;
 
+  @Prop({ comment: '0 -> Male, 1 -> Female' })
+  gender: number;
+
   @Prop()
   phone: string;
 

@@ -226,4 +226,50 @@ export class RiderService {
 
     return { message: 'Payment has been completed !' };
   }
+
+  async rateRide(reqData) {
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+    const rideId = reqData.rideId;
+    if (!rideId) {
+      throw HTTPError({ parameter: 'rideId' });
+    }
+    const rating = reqData.rating;
+    if (!rating) {
+      throw HTTPError({ parameter: 'rating' });
+    }
+    if (![1, 2, 3, 4, 5].includes(rating)) {
+      throw HTTPError({ value: 'rating' });
+    }
+
+    const rideData = await this.mongo.findOne('Ride', { _id: rideId });
+    if (!rideData) {
+      throw HTTPError({
+        statusCode: HttpStatusCode.BadRequest,
+        message: 'No ride data found',
+      });
+    }
+    if (rideData.riderId != userId) {
+      throw HTTPError({
+        statusCode: HttpStatusCode.BadRequest,
+        message: 'Ride is not associated with you',
+      });
+    }
+
+    if (rideData.status != 5 && rideData.status != 4) {
+      throw HTTPError({
+        statusCode: HttpStatusCode.BadRequest,
+        message: 'Ride is not eligible for rating',
+      });
+    }
+
+    await this.mongo.updateOne('Ride', { _id: rideId }, { rating });
+
+    return { message: 'Rating is done, Thanks !' };
+  }
 }

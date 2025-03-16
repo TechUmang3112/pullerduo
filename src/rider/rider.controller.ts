@@ -30,4 +30,9 @@ export class RiderController {
   async funPayForRide(@Body() body) {
     return await this.service.payForRide(body);
   }
+
+  @Post('rateRide')
+  async funRateRide(@Body() body) {
+    return await this.service.rateRide(body);
+  }
 }

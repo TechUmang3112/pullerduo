@@ -69,6 +69,9 @@ export class Ride {
 
   @Prop()
   total_payment: number;
+
+  @Prop()
+  rating: number;
 }
 
 export const RideSchema = SchemaFactory.createForClass(Ride);

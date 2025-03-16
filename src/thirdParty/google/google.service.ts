@@ -23,7 +23,7 @@ export class GoogleService {
     }
     searchText = searchText.toLowerCase();
 
-    const existingResult = await this.mongo.findOne('GooglePlace', {
+    const existingResult = await this.mongo.findOne('googlePlace', {
       searchText,
     });
     if (existingResult) {
@@ -33,7 +33,21 @@ export class GoogleService {
       return existingResult.response;
     }
 
-    const body = { textQuery: searchText };
+    const body = {
+      textQuery: searchText,
+      locationRestriction: {
+        rectangle: {
+          low: {
+            latitude: 22.5,
+            longitude: 72.0,
+          },
+          high: {
+            latitude: 23.5,
+            longitude: 73.0,
+          },
+        },
+      },
+    };
     const headers = {
       'X-Goog-FieldMask': 'places.displayName,places.location',
     };
@@ -49,7 +63,7 @@ export class GoogleService {
       });
     });
 
-    await this.mongo.insert('GooglePlace', {
+    await this.mongo.insert('googlePlace', {
       searchText,
       response: finalizedList,
     });

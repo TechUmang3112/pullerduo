@@ -1,9 +1,5 @@
 // Imports
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from './models/user.model';
-import { FileDoc, FileDocDocument } from './models/file.model';
 import {
   GooglePlaces,
   GooglePlacesDocument,
@@ -12,6 +8,11 @@ import {
   GoogleMeasure,
   GoogleMeasureDocument,
 } from './models/google.measure.model';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from './models/user.model';
+import { Ride, RideDocument } from './models/ride.model';
+import { FileDoc, FileDocDocument } from './models/file.model';
 
 @Injectable()
 export class MongoService {
@@ -24,6 +25,8 @@ export class MongoService {
     private readonly googlePlacesModel: Model<GooglePlacesDocument>,
     @InjectModel(GoogleMeasure.name)
     private readonly googleMeasureModel: Model<GoogleMeasureDocument>,
+    @InjectModel(Ride.name)
+    private readonly rideModel: Model<RideDocument>,
   ) {}
 
   async insert(model: string, document: any) {
@@ -34,6 +37,36 @@ export class MongoService {
   async findOne(model: string, filter: any) {
     const selectedModel = this.getModel(model);
     return await selectedModel.findOne(filter).exec();
+  }
+
+  async count(model: string, filter: any) {
+    const selectedModel = this.getModel(model);
+    return await selectedModel.countDocuments(filter).exec();
+  }
+
+  async findAll(
+    model: string,
+    filter: any,
+    projection: any = {},
+    options: any = {},
+  ) {
+    const selectedModel = this.getModel(model);
+    let query = selectedModel.find(filter, projection);
+
+    // Apply sorting if provided
+    if (options.sort) {
+      query = query.sort(options.sort);
+    }
+
+    // Apply pagination if provided
+    if (options.limit) {
+      query = query.limit(options.limit);
+    }
+    if (options.skip) {
+      query = query.skip(options.skip);
+    }
+
+    return await query.exec();
   }
 
   async updateOne(model: string, filter: any, update: any) {
@@ -51,6 +84,8 @@ export class MongoService {
       return (selectedModel = this.googlePlacesModel);
     } else if (model == 'googleMeasure') {
       return (selectedModel = this.googleMeasureModel);
+    } else if (model == 'Ride') {
+      return (selectedModel = this.rideModel);
     }
 
     return selectedModel;

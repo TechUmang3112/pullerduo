@@ -1,6 +1,6 @@
 // Imports
 import { DriverService } from './driver.service';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 
 @Controller('driver')
 export class DriverController {
@@ -9,5 +9,15 @@ export class DriverController {
   @Post('offerRide')
   async funOfferRide(@Body() body) {
     return await this.service.offerRide(body);
+  }
+
+  @Post('cancelRide')
+  async funCancelRide(@Body() body) {
+    return await this.service.cancelRide(body);
+  }
+
+  @Get('myRides')
+  async funMyRides(@Query() query) {
+    return await this.service.myRides(query);
   }
 }

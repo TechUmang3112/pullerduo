@@ -22,7 +22,7 @@ export class UserController {
   }
 
   @Post('updateProfile')
-  @UseInterceptors(FileInterceptor('aadhaarCard', kUploadFileObj()))
+  @UseInterceptors(FileInterceptor('file', kUploadFileObj()))
   async funUpdateProfile(@UploadedFile() file, @Body() body) {
     return await this.service.updateProfile({ file, ...body });
   }

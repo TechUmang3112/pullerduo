@@ -147,6 +147,7 @@ export class AuthService {
       throw HTTPError({ message: 'password must be 6 digit or more' });
     if (!/[a-z]/.test(password) || !/[A-Z]/.test(password))
       throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
         message: 'password must contain both uppercase and lowercase letters',
       });
 

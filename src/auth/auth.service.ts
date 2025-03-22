@@ -51,7 +51,7 @@ export class AuthService {
   async validateOtp(reqData) {
     const otp = reqData.otp;
     if (!otp) throw HTTPError({ parameter: 'otp' });
-    if (otp.length != 4) throw HTTPError({ value: 'otp' });
+    if (otp.length != 6) throw HTTPError({ value: 'otp' });
     let email: string = reqData.email;
     if (!email) throw HTTPError({ parameter: 'email' });
     if (!this.strService.isValidEmail(email))
@@ -107,7 +107,7 @@ export class AuthService {
     email = email.toLowerCase();
     const otp = reqData.otp;
     if (!otp) throw HTTPError({ parameter: 'otp' });
-    if (otp.length != 4) throw HTTPError({ value: 'otp' });
+    if (otp.length != 6) throw HTTPError({ value: 'otp' });
     const password = reqData.password;
     if (!password) throw HTTPError({ parameter: 'password' });
     if (password < 6)

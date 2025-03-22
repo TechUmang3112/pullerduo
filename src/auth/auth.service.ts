@@ -132,7 +132,13 @@ export class AuthService {
       });
     }
 
-    return { message: 'Password changed successfully !' };
+    await this.mongo.updateOne(
+      'User',
+      { email },
+      { isEmailVerified: true, password },
+    );
+
+    return { id: existingData._id, message: 'Password changed successfully !' };
   }
 
   async login(reqData) {

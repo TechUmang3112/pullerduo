@@ -75,7 +75,7 @@ export class AuthService {
 
     await this.mongo.updateOne('User', { email }, { isEmailVerified: true });
 
-    return { message: 'OTP verified succefully !' };
+    return { id: existingData._id, message: 'OTP verified succefully !' };
   }
 
   async forgotpassword(reqData) {

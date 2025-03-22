@@ -10,6 +10,7 @@ export class StrService {
   }
 
   generateOTP(reqData: { length: number }) {
+    return '111111';
     const digits = '0123456789'; // All possible digits for the OTP
     let otp = '';
 

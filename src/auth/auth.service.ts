@@ -29,6 +29,10 @@ export class AuthService {
       throw HTTPError({
         message: 'password must contain both uppercase and lowercase letters',
       });
+    const name: string = reqData.name;
+    if (!name) {
+      throw HTTPError({ parameter: 'name' });
+    }
 
     const existingData = await this.mongo.findOne('User', { email });
     if (existingData) {
@@ -39,7 +43,7 @@ export class AuthService {
     }
 
     const otp = this.strService.generateOTP({ length: 4 });
-    await this.mongo.insert('User', { email, password, otp });
+    await this.mongo.insert('User', { email, name, password, otp });
 
     return {
       message:

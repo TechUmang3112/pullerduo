@@ -39,6 +39,7 @@ export class UserService {
     }
 
     return {
+      dob: userData.dob,
       email: userData.email,
       name: userData.name,
       type: userData.type,
@@ -74,6 +75,10 @@ export class UserService {
     if (gender != '1' && gender != '0') {
       throw HTTPError({ value: 'gender' });
     }
+    const dob = reqData.dob;
+    if (!dob) {
+      throw HTTPError({ parameter: 'dob' });
+    }
 
     const userData = await this.mongo.findOne('User', { _id: userId });
     if (!userData) {
@@ -97,7 +102,7 @@ export class UserService {
     await this.mongo.updateOne(
       'User',
       { _id: userId },
-      { gender, fileDocId, name, type },
+      { dob, gender, fileDocId, name, type },
     );
 
     return {};

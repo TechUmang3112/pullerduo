@@ -39,6 +39,7 @@ export class UserService {
     }
 
     return {
+      gender: userData.gender,
       dob: userData.dob,
       email: userData.email,
       name: userData.name,

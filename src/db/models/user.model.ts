@@ -25,6 +25,9 @@ export class User {
   @Prop()
   otp: string;
 
+  @Prop()
+  dob: string;
+
   @Prop({ default: false })
   isEmailVerified: boolean;
 

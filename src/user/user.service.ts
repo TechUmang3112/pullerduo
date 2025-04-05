@@ -29,7 +29,7 @@ export class UserService {
     }
 
     let isDocVerificationPending = false;
-    if (userData.type != -1) {
+    if (userData.type != -1 && userData.type != '2') {
       if (
         userData.isAadhaarApproved == false &&
         userData.isDriverLicenceApproved == false

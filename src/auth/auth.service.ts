@@ -183,6 +183,7 @@ export class AuthService {
     }
 
     return {
+      type: existingData.type,
       id: existingData._id,
       isEmailVerified: existingData.isEmailVerified,
       message: 'Login successful',

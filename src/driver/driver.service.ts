@@ -149,7 +149,10 @@ export class DriverService {
     };
     await this.mongo.insert('Ride', creationData);
 
-    return {};
+    return {
+      success: true,
+      successMsg: 'Ride has been published successfully !',
+    };
   }
 
   async cancelRide(reqData) {

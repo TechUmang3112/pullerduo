@@ -1,8 +1,8 @@
 // Imports
 import { MongoService } from 'src/db/mongo';
+import { FileService } from 'src/utils/file.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { HTTPError, raiseNotFound } from 'src/configs/error';
-import { FileService } from 'src/utils/file.service';
 
 @Injectable()
 export class UserService {
@@ -186,5 +186,38 @@ export class UserService {
     });
 
     return { count: { total, current, upcoming, completed } };
+  }
+
+  async upcomingRideList(reqData) {
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+
+    const existingData = await this.mongo.findOne('User', { _id: userId });
+    if (!existingData) {
+      raiseNotFound('User Data');
+    }
+
+    const isDriver = existingData.type == '1';
+    const options: any = { status: { $in: ['-1', '-2'] } };
+    if (isDriver) {
+      options.driverId = userId;
+    } else {
+      options.riderId = userId;
+    }
+    const allRideList = await this.mongo.findAll('Ride', options, [
+      'startPlace',
+      'endPlace',
+      'rideTime',
+      'total_payment',
+    ]);
+
+    allRideList.sort((b, a) => a.rideTime.getTime() - b.rideTime.getTime());
+
+    return { list: allRideList };
   }
 }

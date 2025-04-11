@@ -51,4 +51,9 @@ export class UserController {
   async funGetRideCounts(@Query() query) {
     return await this.service.getRideCounts(query);
   }
+
+  @Get('upcomingRideList')
+  async funUpcomingRideList(@Query() query) {
+    return await this.service.upcomingRideList(query);
+  }
 }

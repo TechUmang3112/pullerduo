@@ -26,4 +26,29 @@ export class UserController {
   async funUpdateProfile(@UploadedFile() file, @Body() body) {
     return await this.service.updateProfile({ file, ...body });
   }
+
+  @Get('totalrides')
+  async funtotalrides(@Body() Body) {
+    return await this.service.totalrides(Body);
+  }
+
+  @Get('upcomingrides')
+  async funupcomingrides(@Body() Body) {
+    return await this.service.upcomingrides(Body);
+  }
+
+  @Get('currentride')
+  async funcurrentride(@Body() Body) {
+    return await this.service.currentride(Body);
+  }
+
+  @Get('completedrides')
+  async funcompletedrides(@Body() Body) {
+    return await this.service.completedrides(Body);
+  }
+
+  @Get('getRideCounts')
+  async funGetRideCounts(@Query() query) {
+    return await this.service.getRideCounts(query);
+  }
 }

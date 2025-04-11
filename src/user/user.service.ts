@@ -1,7 +1,7 @@
 // Imports
 import { MongoService } from 'src/db/mongo';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { HTTPError } from 'src/configs/error';
+import { HTTPError, raiseNotFound } from 'src/configs/error';
 import { FileService } from 'src/utils/file.service';
 
 @Injectable()
@@ -107,5 +107,84 @@ export class UserService {
     );
 
     return {};
+  }
+
+  async totalrides(reqData) {
+    const totalrides = reqData.totalrides;
+    if (!totalrides) {
+      throw HTTPError({ parameter: 'Totalrides' });
+    }
+    return {};
+  }
+
+  async upcomingrides(reqData) {
+    const upcomingrides = reqData.upcomingride;
+    if (!upcomingrides) {
+      throw HTTPError({ parameter: 'upcomingrides' });
+    }
+    return {};
+  }
+
+  async currentride(reqData) {
+    const currentride = reqData.currentride;
+    if (!currentride) {
+      throw HTTPError({ parameter: 'currentride' });
+    }
+    return {};
+  }
+
+  async completedrides(reqData) {
+    const completedrides = reqData.completedrides;
+    if (!completedrides) {
+      throw HTTPError({ parameter: 'completedridess' });
+    }
+    return {};
+  }
+
+  async getRideCounts(reqData) {
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+
+    const existingData = await this.mongo.findOne('User', { _id: userId });
+    if (!existingData) {
+      raiseNotFound('User Data');
+    }
+
+    const isDriver = existingData.type == '1';
+    const options: any = {};
+    if (isDriver) {
+      options.driverId = userId;
+    } else {
+      options.riderId = userId;
+    }
+    const allRideList = await this.mongo.findAll('Ride', options, ['status']);
+
+    let total = 0;
+    let current = 0;
+    let upcoming = 0;
+    let completed = 0;
+
+    allRideList.forEach((el) => {
+      total++;
+
+      if (el.status == -1 || el.status == -2) {
+        upcoming++;
+      }
+
+      if (el.status == 0) {
+        current++;
+      }
+
+      if (el.status == 5) {
+        completed++;
+      }
+    });
+
+    return { count: { total, current, upcoming, completed } };
   }
 }

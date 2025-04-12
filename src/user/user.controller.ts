@@ -66,4 +66,9 @@ export class UserController {
   async funchangePassword(@Body() body) {
     return await this.service.changePassword(body);
   }
+
+  @Get('notifications')
+  async funNotifications(@Query() query) {
+    return await this.service.notifications(query);
+  }
 }

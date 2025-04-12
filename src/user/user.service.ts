@@ -301,4 +301,20 @@ export class UserService {
 
     return { success: true, successMsg: 'Password changed successfully !' };
   }
+
+  async notifications(reqData) {
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+
+    const list = await this.mongo.findAll('Notification', { userId });
+
+    list.sort((b, a) => a.dateTime.getTime() - b.dateTime.getTime());
+
+    return { list };
+  }
 }

@@ -5,6 +5,10 @@ import {
   GooglePlacesDocument,
 } from './models/google.places.model';
 import {
+  Notification,
+  NotificationDocument,
+} from './models/notification.model';
+import {
   GoogleMeasure,
   GoogleMeasureDocument,
 } from './models/google.measure.model';
@@ -27,6 +31,8 @@ export class MongoService {
     private readonly googleMeasureModel: Model<GoogleMeasureDocument>,
     @InjectModel(Ride.name)
     private readonly rideModel: Model<RideDocument>,
+    @InjectModel(Notification.name)
+    private readonly notificationModel: Model<NotificationDocument>,
   ) {}
 
   async insert(model: string, document: any) {
@@ -86,6 +92,8 @@ export class MongoService {
       return (selectedModel = this.googleMeasureModel);
     } else if (model == 'Ride') {
       return (selectedModel = this.rideModel);
+    } else if (model == 'Notification') {
+      return (selectedModel = this.notificationModel);
     }
 
     return selectedModel;

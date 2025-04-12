@@ -61,4 +61,9 @@ export class UserController {
   async funallRidesList(@Query() query) {
     return await this.service.allRidesList(query);
   }
+
+  @Post('changePassword')
+  async funchangePassword(@Body() body) {
+    return await this.service.changePassword(body);
+  }
 }

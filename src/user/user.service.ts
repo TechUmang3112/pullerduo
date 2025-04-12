@@ -236,7 +236,7 @@ export class UserService {
     }
 
     const isDriver = existingData.type == '1';
-    const options: any = { status: { $in: ['-1', '-2'] } };
+    const options: any = {};
     if (isDriver) {
       options.driverId = userId;
     } else {
@@ -253,5 +253,52 @@ export class UserService {
     allRideList.sort((b, a) => a.rideTime.getTime() - b.rideTime.getTime());
 
     return { list: allRideList };
+  }
+
+  async changePassword(reqData) {
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+    const password = reqData.password;
+    if (!password) {
+      throw HTTPError({ parameter: 'password' });
+    }
+    if (password < 6)
+      throw HTTPError({ message: 'password must be 6 digit or more' });
+    if (!/[a-z]/.test(password) || !/[A-Z]/.test(password))
+      throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'password must contain both uppercase and lowercase letters',
+      });
+    const oldPassword = reqData.oldPassword;
+    if (!oldPassword) {
+      throw HTTPError({ parameter: 'oldPassword' });
+    }
+
+    const existingData = await this.mongo.findOne('User', { _id: userId });
+    if (!existingData) {
+      raiseNotFound('User Data');
+    }
+
+    if (existingData.password == password) {
+      throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'password can not be same as old password',
+      });
+    }
+    if (oldPassword != existingData.password) {
+      throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Current password is incorrect',
+      });
+    }
+
+    await this.mongo.updateOne('User', { _id: userId }, { password });
+
+    return { success: true, successMsg: 'Password changed successfully !' };
   }
 }

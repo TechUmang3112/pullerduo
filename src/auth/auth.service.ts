@@ -1,6 +1,7 @@
 // Imports
 import { MongoService } from 'src/db/mongo';
 import { HTTPError } from 'src/configs/error';
+import { OTP_HTML } from 'src/constants/strings';
 import { StrService } from 'src/utils/str.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { MailJetService } from 'src/thirdParty/mailjet/mail.jet.service';
@@ -46,11 +47,7 @@ export class AuthService {
 
     const otp = this.strService.generateOTP({ length: 4 });
     await this.mongo.insert('User', { email, name, password, otp });
-    await this.mailJet.sendMail({
-      email,
-      subject: 'OTP Verfication',
-      textContent: `Your OTP is ${otp}.\n\nIf you have any query please feel free to reach us at pullerduo2025@gmail.com`,
-    });
+    await this.sendOTPMail(email, otp);
 
     return {
       message:
@@ -106,11 +103,7 @@ export class AuthService {
 
     const otp = this.strService.generateOTP({ length: 4 });
     await this.mongo.updateOne('User', { email }, { otp });
-    await this.mailJet.sendMail({
-      email,
-      subject: 'OTP Verfication',
-      textContent: `Your OTP is ${otp}.\n\nIf you have any query please feel free to reach us at pullerduo2025@gmail.com`,
-    });
+    await this.sendOTPMail(email, otp);
 
     return { message: 'OTP sent for forgot password' };
   }
@@ -192,11 +185,7 @@ export class AuthService {
     if (!existingData.isEmailVerified) {
       const otp = this.strService.generateOTP({ length: 4 });
       await this.mongo.updateOne('User', { email }, { otp });
-      await this.mailJet.sendMail({
-        email,
-        subject: 'OTP Verfication',
-        textContent: `Your OTP is ${otp}.\n\nIf you have any query please feel free to reach us at pullerduo2025@gmail.com`,
-      });
+      await this.sendOTPMail(email, otp);
     }
 
     return {
@@ -205,5 +194,13 @@ export class AuthService {
       isEmailVerified: existingData.isEmailVerified,
       message: 'Login successful',
     };
+  }
+
+  private async sendOTPMail(email: string, otp: string) {
+    await this.mailJet.sendMail({
+      email,
+      subject: 'OTP Verfication',
+      htmlContent: OTP_HTML.replace('OTP_CODE', otp),
+    });
   }
 }

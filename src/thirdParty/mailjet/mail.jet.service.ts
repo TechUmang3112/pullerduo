@@ -12,6 +12,7 @@ export class MailJetService {
     const email = reqData.email;
     const subject = reqData.subject;
     const textContent = reqData.textContent;
+    const htmlContent = reqData.htmlContent;
 
     const auth = Buffer.from(
       `${Env.thirdParty.mailJet.apiKey}:${Env.thirdParty.mailJet.secretKey}`,
@@ -36,7 +37,7 @@ export class MailJetService {
           ],
           Subject: subject,
           TextPart: textContent,
-          HTMLPart: '',
+          HTMLPart: htmlContent,
         },
       ],
     };

@@ -45,7 +45,7 @@ export class AuthService {
       });
     }
 
-    const otp = this.strService.generateOTP({ length: 4 });
+    const otp = this.strService.generateOTP({ length: 6 });
     await this.mongo.insert('User', { email, name, password, otp });
     await this.sendOTPMail(email, otp);
 
@@ -101,7 +101,7 @@ export class AuthService {
       });
     }
 
-    const otp = this.strService.generateOTP({ length: 4 });
+    const otp = this.strService.generateOTP({ length: 6 });
     await this.mongo.updateOne('User', { email }, { otp });
     await this.sendOTPMail(email, otp);
 
@@ -183,7 +183,7 @@ export class AuthService {
 
     // New OTP
     if (!existingData.isEmailVerified) {
-      const otp = this.strService.generateOTP({ length: 4 });
+      const otp = this.strService.generateOTP({ length: 6 });
       await this.mongo.updateOne('User', { email }, { otp });
       await this.sendOTPMail(email, otp);
     }

@@ -36,13 +36,11 @@ export class RiderService {
         message: 'Rider data not found',
       });
     }
-    if (userData.type == -1) {
-      if (!userData.isAadhaarApproved) {
-        throw HTTPError({
-          statusCode: HttpStatusCode.BadRequest,
-          message: 'Aadhaar verification is pending !',
-        });
-      }
+    if (!userData.isAadhaarApproved) {
+      throw HTTPError({
+        statusCode: HttpStatusCode.BadRequest,
+        message: 'Aadhaar verification is pending !',
+      });
     }
 
     const approximate_start_ride_time =
@@ -60,7 +58,7 @@ export class RiderService {
       },
     });
 
-    return { rows: rideList };
+    return { list: rideList };
   }
 
   async acceptRide(reqData) {

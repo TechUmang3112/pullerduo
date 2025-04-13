@@ -3,11 +3,13 @@ import { MongoService } from 'src/db/mongo';
 import { HTTPError } from 'src/configs/error';
 import { StrService } from 'src/utils/str.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { MailJetService } from 'src/thirdParty/mailjet/mail.jet.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly mongo: MongoService,
+    private readonly mailJet: MailJetService,
     private readonly strService: StrService,
   ) {}
 
@@ -44,6 +46,11 @@ export class AuthService {
 
     const otp = this.strService.generateOTP({ length: 4 });
     await this.mongo.insert('User', { email, name, password, otp });
+    await this.mailJet.sendMail({
+      email,
+      subject: 'OTP Verfication',
+      textContent: `Your OTP is ${otp}.\n\nIf you have any query please feel free to reach us at pullerduo2025@gmail.com`,
+    });
 
     return {
       message:
@@ -99,6 +106,11 @@ export class AuthService {
 
     const otp = this.strService.generateOTP({ length: 4 });
     await this.mongo.updateOne('User', { email }, { otp });
+    await this.mailJet.sendMail({
+      email,
+      subject: 'OTP Verfication',
+      textContent: `Your OTP is ${otp}.\n\nIf you have any query please feel free to reach us at pullerduo2025@gmail.com`,
+    });
 
     return { message: 'OTP sent for forgot password' };
   }
@@ -180,6 +192,11 @@ export class AuthService {
     if (!existingData.isEmailVerified) {
       const otp = this.strService.generateOTP({ length: 4 });
       await this.mongo.updateOne('User', { email }, { otp });
+      await this.mailJet.sendMail({
+        email,
+        subject: 'OTP Verfication',
+        textContent: `Your OTP is ${otp}.\n\nIf you have any query please feel free to reach us at pullerduo2025@gmail.com`,
+      });
     }
 
     return {

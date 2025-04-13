@@ -7,6 +7,10 @@ export const Env = {
     google: {
       maps_key: process.env.GOOGLE_API_KEY,
     },
+    mailJet: {
+      apiKey: process.env.MAIL_JET_API_KEY,
+      secretKey: process.env.MAIL_JET_SECRET_KEY,
+    },
   },
 };
 

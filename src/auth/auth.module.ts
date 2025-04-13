@@ -5,9 +5,10 @@ import { AuthService } from './auth.service';
 import { StrService } from 'src/utils/str.service';
 import { MongoService } from 'src/db/mongo';
 import { mongoModels } from 'src/db/models/inject.mongo.models';
+import { MailJetModule } from 'src/thirdParty/mailjet/mail.jet.module';
 
 @Module({
-  imports: [...mongoModels],
+  imports: [...mongoModels, MailJetModule],
   controllers: [AuthController],
   providers: [AuthService, MongoService, StrService],
 })

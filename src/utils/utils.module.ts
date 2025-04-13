@@ -4,5 +4,8 @@ import { StrService } from './str.service';
 import { FileService } from './file.service';
 import { ApiService } from './api.service';
 
-@Module({ providers: [ApiService, FileService, StrService] })
+@Module({
+  exports: [ApiService],
+  providers: [ApiService, FileService, StrService],
+})
 export class UtilsModule {}

@@ -94,7 +94,19 @@ export class RiderService {
       { riderId: userId, status: -2 },
     );
 
-    return { message: 'Ride has been accepted !' };
+    await this.mongo.insert('Notification', {
+      dateTime: new Date(),
+      userId,
+      content: `Your ride from ${rideData.startPlace} to ${rideData.endPlace} has been accepted !`,
+    });
+
+    await this.mongo.insert('Notification', {
+      dateTime: new Date(),
+      userId: rideData.driverId,
+      content: `Your ride from ${rideData.startPlace} to ${rideData.endPlace} has been accepted by the rider !`,
+    });
+
+    return { success: true, successMsg: 'Ride has been accepted !' };
   }
 
   async myRides(reqData: { userId: any; page: any; pageSize: any }) {

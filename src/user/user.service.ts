@@ -151,6 +151,16 @@ export class UserService {
       return { isActiveCurrentRide: false };
     }
 
+    const riderData = await this.mongo.findOne('User', {
+      _id: currentRide.riderId,
+    });
+    if (!riderData) {
+      throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Rider data not found',
+      });
+    }
+
     return {
       isActiveCurrentRide: true,
       startPlace: currentRide.startPlace,
@@ -160,6 +170,8 @@ export class UserService {
       timeInMinutes: currentRide.timeInMinutes,
       driver_cost: currentRide.total_payment,
       platform_fee: 25,
+      rider_name: riderData.name,
+      rider_email: riderData.email,
     };
   }
 

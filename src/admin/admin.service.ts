@@ -1,7 +1,7 @@
 // Imports
 import { Injectable } from '@nestjs/common';
-import { HTTPError, raiseNotFound } from 'src/configs/error';
 import { MongoService } from 'src/db/mongo';
+import { HTTPError, raiseNotFound } from 'src/configs/error';
 
 @Injectable()
 export class AdminService {
@@ -70,5 +70,34 @@ export class AdminService {
       success: true,
       successMsg: `${existingData.name} is ${isActive ? 'activated' : 'deactivated'} Successfully !`,
     };
+  }
+
+  async pendingApprovals() {
+    const user_list = await this.mongo.findAll(
+      'User',
+      {
+        fileDocId: { $ne: null },
+        isAadhaarApproved: false,
+        isDriverLicenceApproved: false,
+      },
+      ['name', 'type', 'fileDocId'],
+    );
+
+    const fileDocIds = user_list.map((el) => el.fileDocId);
+    const file_list = await this.mongo.findAll('FileDoc', {
+      _id: { $in: fileDocIds },
+    });
+
+    const target_list: any = [];
+    user_list.forEach((el) => {
+      const fileData = file_list.find((subEl) => subEl._id == el.fileDocId);
+      target_list.push({
+        name: el.name,
+        _id: el._id,
+        base64Content: fileData.content,
+      });
+    });
+
+    return { list: target_list };
   }
 }

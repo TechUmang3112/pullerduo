@@ -25,4 +25,9 @@ export class AdminController {
   async funUpdateUserStatus(@Body() body) {
     return await this.service.updateUserStatus(body);
   }
+
+  @Get('pendingApprovals')
+  async funPendingApprovals() {
+    return await this.service.pendingApprovals();
+  }
 }

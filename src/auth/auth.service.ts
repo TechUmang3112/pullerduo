@@ -174,6 +174,14 @@ export class AuthService {
       });
     }
 
+    if (existingData.isActive == false) {
+      throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message:
+          'Your account is not active, Kindly contact pullerduo2025@gmail.com for more',
+      });
+    }
+
     if (password != existingData.password) {
       throw HTTPError({
         statusCode: HttpStatus.BAD_REQUEST,

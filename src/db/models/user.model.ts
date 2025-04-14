@@ -46,6 +46,9 @@ export class User {
 
   @Prop()
   fileDocId: string;
+
+  @Prop({ default: true })
+  isActive: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

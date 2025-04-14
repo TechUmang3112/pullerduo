@@ -16,6 +16,11 @@ export class DriverController {
     return await this.service.cancelRide(body);
   }
 
+  @Post('startRide')
+  async funStartRide(@Body() body) {
+    return await this.service.startRide(body);
+  }
+
   @Get('myRides')
   async funMyRides(@Query() query) {
     return await this.service.myRides(query);

@@ -198,6 +198,55 @@ export class DriverService {
     return { success: true, successMsg: 'Ride is cancelled successfully !' };
   }
 
+  async startRide(reqData) {
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+    const rideId = reqData.rideId;
+    if (rideId.length != 24) {
+      throw HTTPError({ value: 'rideId' });
+    }
+    if (!rideId) {
+      throw HTTPError({ parameter: 'rideId' });
+    }
+
+    const userData = await this.mongo.findOne('User', { _id: userId });
+    if (!userData) {
+      throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'User not found',
+      });
+    }
+
+    const rideData = await this.mongo.findOne('Ride', { _id: rideId });
+    if (!rideData) {
+      throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Ride not found',
+      });
+    }
+    if (rideData.driverId != userId) {
+      throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Ride is not associated with you.',
+      });
+    }
+    if (!rideData.riderId) {
+      throw HTTPError({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Can not start the ride before rider join the ride',
+      });
+    }
+
+    await this.mongo.updateOne('Ride', { _id: rideId }, { status: 0 });
+
+    return { success: true, successMsg: 'Ride is cancelled successfully !' };
+  }
+
   async myRides(reqData) {
     const userId = reqData.userId;
     if (!userId) {

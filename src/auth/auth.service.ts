@@ -83,6 +83,12 @@ export class AuthService {
 
     await this.mongo.updateOne('User', { email }, { isEmailVerified: true });
 
+    await this.mongo.insert('Notification', {
+      dateTime: new Date(),
+      userId: existingData._id,
+      content: `Your email has been verified !`,
+    });
+
     return { id: existingData._id, message: 'OTP verified succefully !' };
   }
 

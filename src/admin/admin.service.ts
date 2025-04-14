@@ -138,8 +138,20 @@ export class AdminService {
       } else {
         updatedData.isDriverLicenceApproved = true;
       }
+
+      await this.mongo.insert('Notification', {
+        dateTime: new Date(),
+        userId: existingData._id,
+        content: `Your document has been verified !`,
+      });
     } else {
       updatedData.fileDocId = null;
+
+      await this.mongo.insert('Notification', {
+        dateTime: new Date(),
+        userId: existingData._id,
+        content: `Your document has been rejected !`,
+      });
     }
 
     await this.mongo.updateOne('User', { _id: existingData._id }, updatedData);

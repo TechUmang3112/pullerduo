@@ -244,7 +244,7 @@ export class DriverService {
 
     await this.mongo.updateOne('Ride', { _id: rideId }, { status: 0 });
 
-    return { success: true, successMsg: 'Ride is cancelled successfully !' };
+    return { success: true, successMsg: 'Ride is started successfully !' };
   }
 
   async myRides(reqData) {

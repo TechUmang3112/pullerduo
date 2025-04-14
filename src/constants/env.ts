@@ -11,7 +11,9 @@ export const Env = {
       apiKey: process.env.MAIL_JET_API_KEY,
       secretKey: process.env.MAIL_JET_SECRET_KEY,
     },
+    razorpay: {
+      appId: process.env.RAZORPAY_APP_ID,
+      secretKey: process.env.RAZORPAY_APP_SECRET,
+    },
   },
 };
-
-console.log({ Env });

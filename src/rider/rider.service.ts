@@ -3,10 +3,15 @@ import { HttpStatusCode } from 'axios';
 import { MongoService } from 'src/db/mongo';
 import { Injectable } from '@nestjs/common';
 import { HTTPError } from 'src/configs/error';
+import { Env } from 'src/constants/env';
+import { ApiService } from 'src/utils/api.service';
 
 @Injectable()
 export class RiderService {
-  constructor(private readonly mongo: MongoService) {}
+  constructor(
+    private readonly api: ApiService,
+    private readonly mongo: MongoService,
+  ) {}
 
   async findRide(reqData) {
     const userId = reqData.userId;
@@ -281,5 +286,60 @@ export class RiderService {
     await this.mongo.updateOne('Ride', { _id: rideId }, { rating });
 
     return { message: 'Rating is done, Thanks !' };
+  }
+
+  async initiatePayment(reqData) {
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+
+    const existingData = await this.mongo.findOne('User', { _id: userId });
+
+    const rideData = await this.mongo.findOne('Ride', {
+      riderId: userId,
+      status: '0',
+    });
+    if (!rideData) {
+      throw HTTPError({
+        statusCode: HttpStatusCode.BadRequest,
+        message: 'No active ride is found !',
+      });
+    }
+
+    const url = 'https://api.razorpay.com/v1/payment_links';
+    const body = {
+      amount: (rideData.total_payment + 25) * 100,
+      currency: 'INR',
+      accept_partial: false,
+      description: 'Ride payment',
+      customer: {
+        name: existingData.name,
+        email: existingData.email,
+        contact: '7490900550',
+      },
+      notify: {
+        sms: false,
+        email: true,
+      },
+      reminder_enable: false,
+      notes: {},
+      callback_url: 'https://puller-duo-ui.vercel.app/user/currentRide',
+      callback_method: 'get',
+    };
+    const base64Credentials = Buffer.from(
+      `${Env.thirdParty.razorpay.appId}:${Env.thirdParty.razorpay.secretKey}`,
+    ).toString('base64');
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${base64Credentials}`, // Use the encoded credentials
+    };
+
+    const response = await this.api.post(url, body, headers);
+
+    return { url: response.short_url };
   }
 }

@@ -35,4 +35,9 @@ export class RiderController {
   async funRateRide(@Body() body) {
     return await this.service.rateRide(body);
   }
+
+  @Post('initiatePayment')
+  async funInitiatePayment(@Body() body) {
+    return await this.service.initiatePayment(body);
+  }
 }

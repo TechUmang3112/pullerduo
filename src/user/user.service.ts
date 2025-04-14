@@ -138,8 +138,29 @@ export class UserService {
     if (!existingData) {
       raiseNotFound('User Data');
     }
+    const isDriver = existingData.type == '1';
+    const options: any = { status: '0' };
+    if (isDriver) {
+      options.driverId = userId;
+    } else {
+      options.riderId = userId;
+    }
 
-    return {};
+    const currentRide = await this.mongo.findOne('Ride', options);
+    if (!currentRide) {
+      return { isActiveCurrentRide: false };
+    }
+
+    return {
+      isActiveCurrentRide: true,
+      startPlace: currentRide.startPlace,
+      endPlace: currentRide.endPlace,
+      rideTime: currentRide.rideTime,
+      distanceInKm: currentRide.distanceInKm,
+      timeInMinutes: currentRide.timeInMinutes,
+      driver_cost: currentRide.total_payment,
+      platform_fee: 25,
+    };
   }
 
   async completedrides(reqData) {

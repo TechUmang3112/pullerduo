@@ -38,8 +38,8 @@ export class UserController {
   }
 
   @Get('currentRide')
-  async funcurrentride(@Body() Body) {
-    return await this.service.currentRide(Body);
+  async funcurrentride(@Query() query) {
+    return await this.service.currentRide(query);
   }
 
   @Get('completedrides')

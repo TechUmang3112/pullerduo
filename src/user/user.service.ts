@@ -125,11 +125,20 @@ export class UserService {
     return {};
   }
 
-  async currentride(reqData) {
-    const currentride = reqData.currentride;
-    if (!currentride) {
-      throw HTTPError({ parameter: 'currentride' });
+  async currentRide(reqData) {
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
     }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+
+    const existingData = await this.mongo.findOne('User', { _id: userId });
+    if (!existingData) {
+      raiseNotFound('User Data');
+    }
+
     return {};
   }
 

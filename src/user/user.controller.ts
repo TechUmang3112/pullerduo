@@ -37,9 +37,9 @@ export class UserController {
     return await this.service.upcomingrides(Body);
   }
 
-  @Get('currentride')
+  @Get('currentRide')
   async funcurrentride(@Body() Body) {
-    return await this.service.currentride(Body);
+    return await this.service.currentRide(Body);
   }
 
   @Get('completedrides')

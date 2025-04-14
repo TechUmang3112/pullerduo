@@ -21,7 +21,7 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f7f9fc;
 <h1>Document Approval Notification</h1>
 </div>
 <div class="content">
-<p>Hello <strong>User</strong>,</p>
+<p>Hello <strong>USER_NAME</strong>,</p>
 <p>We're pleased to inform you that your document has been:</p>
 <div class="status-box">APPROVED</div>
 <p>Your document has been successfully verified and approved.</p>
@@ -55,7 +55,7 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f7f9fc;
 <h1>Document Rejection Notification</h1>
 </div>
 <div class="content">
-<p>Hello <strong>User</strong>,</p>
+<p>Hello <strong>USER_NAME</strong>,</p>
 <p>We regret to inform you that your document has been:</p>
 <div class="status-box">REJECTED</div>
 <p>Please review the document and submit again with corrections.</p>

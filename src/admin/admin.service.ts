@@ -125,8 +125,24 @@ export class AdminService {
     await this.mailJet.sendMail({
       subject: `Document is ${action == 'approve' ? 'Approved' : 'Declined'}`,
       email: existingData.email,
-      htmlContent: action == 'approve' ? DOC_APPEROVE : DOC_DECLINE,
+      htmlContent: (action == 'approve' ? DOC_APPEROVE : DOC_DECLINE).replace(
+        'USER_NAME',
+        existingData.name,
+      ),
     });
+
+    const updatedData: any = {};
+    if (action == 'approve') {
+      if (existingData.type == '0') {
+        updatedData.isAadhaarApproved = true;
+      } else {
+        updatedData.isDriverLicenceApproved = true;
+      }
+    } else {
+      updatedData.fileDocId = null;
+    }
+
+    await this.mongo.updateOne('User', { _id: existingData._id }, updatedData);
 
     return {
       success: true,

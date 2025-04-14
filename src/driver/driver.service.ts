@@ -192,16 +192,10 @@ export class DriverService {
         message: 'Ride is not associated with you.',
       });
     }
-    if (rideData.status != -1) {
-      throw HTTPError({
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'You can not reject ride at this point !',
-      });
-    }
 
     await this.mongo.updateOne('Ride', { _id: rideId }, { status: 3 });
 
-    return { message: 'Ride is cancelled successfully !' };
+    return { success: true, successMsg: 'Ride is cancelled successfully !' };
   }
 
   async myRides(reqData) {

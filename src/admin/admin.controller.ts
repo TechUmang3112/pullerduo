@@ -30,4 +30,9 @@ export class AdminController {
   async funPendingApprovals() {
     return await this.service.pendingApprovals();
   }
+
+  @Post('updateDocStatus')
+  async funUpdateDocStatus(@Body() body) {
+    return await this.service.updateDocStatus(body);
+  }
 }

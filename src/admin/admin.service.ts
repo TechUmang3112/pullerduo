@@ -2,10 +2,15 @@
 import { Injectable } from '@nestjs/common';
 import { MongoService } from 'src/db/mongo';
 import { HTTPError, raiseNotFound } from 'src/configs/error';
+import { MailJetService } from 'src/thirdParty/mailjet/mail.jet.service';
+import { DOC_APPEROVE, DOC_DECLINE } from 'src/constants/strings';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly mongo: MongoService) {}
+  constructor(
+    private readonly mongo: MongoService,
+    private readonly mailJet: MailJetService,
+  ) {}
 
   async users() {
     const users = await this.mongo.findAll(
@@ -100,5 +105,32 @@ export class AdminService {
     });
 
     return { list: target_list };
+  }
+
+  async updateDocStatus(reqData) {
+    const action = reqData.action;
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+
+    const existingData = await this.mongo.findOne('User', { _id: userId });
+    if (!existingData) {
+      raiseNotFound('User Data');
+    }
+
+    await this.mailJet.sendMail({
+      subject: `Document is ${action == 'approve' ? 'Approved' : 'Declined'}`,
+      email: existingData.email,
+      htmlContent: action == 'approve' ? DOC_APPEROVE : DOC_DECLINE,
+    });
+
+    return {
+      success: true,
+      successMsg: `Document is ${action == 'approve' ? 'Approved' : 'Declined'}`,
+    };
   }
 }

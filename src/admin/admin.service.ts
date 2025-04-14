@@ -93,6 +93,7 @@ export class AdminService {
       const fileData = file_list.find((subEl) => subEl._id == el.fileDocId);
       target_list.push({
         name: el.name,
+        type: el.type,
         _id: el._id,
         base64Content: fileData.content,
       });

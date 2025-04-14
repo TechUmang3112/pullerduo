@@ -350,4 +350,23 @@ export class AdminService {
       },
     };
   }
+
+  async userInsights() {
+    const users = await this.mongo.findAll('User', {}, ['type']);
+    const rides = await this.mongo.findAll('Ride', {}, ['status']);
+
+    const count = { total: 0, driver: 0, rider: 0, rides: rides.length };
+
+    users.forEach((el) => {
+      count.total++;
+
+      if (el.type == '0') {
+        count.rider++;
+      } else if (el.type == '1') {
+        count.driver++;
+      }
+    });
+
+    return { count };
+  }
 }

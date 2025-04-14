@@ -55,4 +55,9 @@ export class AdminController {
   async funMonthlyComparison() {
     return await this.service.monthlyComparison();
   }
+
+  @Get('userInsights')
+  async funUserInsights() {
+    return await this.service.userInsights();
+  }
 }

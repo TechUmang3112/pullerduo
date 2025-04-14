@@ -21,6 +21,11 @@ export class AdminController {
     return await this.service.riders();
   }
 
+  @Get('totalRides')
+  async funTotalRides() {
+    return await this.service.totalRides();
+  }
+
   @Post('updateUserStatus')
   async funUpdateUserStatus(@Body() body) {
     return await this.service.updateUserStatus(body);

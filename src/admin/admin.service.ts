@@ -149,4 +149,18 @@ export class AdminService {
       successMsg: `Document is ${action == 'approve' ? 'Approved' : 'Declined'}`,
     };
   }
+
+  async totalRides() {
+    const list = await this.mongo.findAll('Ride', {}, [
+      'startPlace',
+      'endPlace',
+      'rideTime',
+      'status',
+      'total_payment',
+    ]);
+
+    list.sort((b, a) => a.rideTime.getTime() - b.rideTime.getTime());
+
+    return { list };
+  }
 }

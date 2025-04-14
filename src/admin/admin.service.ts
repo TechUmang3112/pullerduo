@@ -13,7 +13,13 @@ export class AdminService {
       {
         type: { $nin: [2] },
       },
-      ['name', 'email', 'isAadhaarApproved', 'isDriverLicenceApproved'],
+      [
+        'isActive',
+        'name',
+        'email',
+        'isAadhaarApproved',
+        'isDriverLicenceApproved',
+      ],
     );
 
     return { list: users };

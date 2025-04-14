@@ -80,6 +80,15 @@ export class MongoService {
     return await selectedModel.updateOne(filter, update).exec();
   }
 
+  async aggregate(model: string, pipeline: any[], options?: any) {
+    const selectedModel = this.getModel(model);
+    if (!selectedModel) {
+      throw new Error(`Model ${model} not found`);
+    }
+
+    return await selectedModel.aggregate(pipeline, options).exec();
+  }
+
   private getModel(model) {
     let selectedModel;
     if (model == 'User') {

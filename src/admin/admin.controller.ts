@@ -40,4 +40,19 @@ export class AdminController {
   async funUpdateDocStatus(@Body() body) {
     return await this.service.updateDocStatus(body);
   }
+
+  @Get('monthlyUsers')
+  async funMonthlyUsers() {
+    return await this.service.monthlyUsers();
+  }
+
+  @Get('yearlyUsers')
+  async funYearlyUsers() {
+    return await this.service.yearlyUsers();
+  }
+
+  @Get('monthlyComparison')
+  async funMonthlyComparison() {
+    return await this.service.monthlyComparison();
+  }
 }

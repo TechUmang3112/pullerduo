@@ -67,3 +67,41 @@ body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f7f9fc;
 </div>
 </body>
 </html>`;
+
+export const PAYMENT_RECEIVED = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f7f9fc;margin:0;padding:0;color:#333}
+.container{max-width:600px;margin:20px auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.1)}
+.header{background:linear-gradient(135deg,#2196F3,#64B5F6);padding:30px 20px;text-align:center;color:#fff}
+.header h1{margin:0;font-size:24px;font-weight:600}
+.content{padding:30px}
+.status-box{background:#e3f2fd;border-radius:8px;padding:20px;text-align:center;margin:20px 0;font-size:24px;font-weight:bold;color:#1565C0;border:1px dashed #64B5F6}
+.amount{font-size:32px;margin:10px 0;color:#0D47A1}
+.footer{background:#f1f1f1;padding:15px;text-align:center;font-size:12px;color:#777}
+.note{font-size:14px;color:#777;margin-top:20px}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>Payment Received Notification</h1>
+</div>
+<div class="content">
+<p>Hello <strong>USER_NAME</strong>,</p>
+<p>We're pleased to inform you that we have received your payment:</p>
+<div class="status-box">
+  PAYMENT RECEIVED
+  <div class="amount">PAYMENT_AMOUNT</div>
+</div>
+<p>Your payment has been successfully processed and credited to your account.</p>
+<p class="note">Thank you for your payment.</p>
+</div>
+<div class="footer">
+<p>&copy; 2025 PullerDuo. All rights reserved.</p>
+</div>
+</div>
+</body>
+</html>`;

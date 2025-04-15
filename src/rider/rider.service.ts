@@ -5,12 +5,15 @@ import { Injectable } from '@nestjs/common';
 import { HTTPError } from 'src/configs/error';
 import { Env } from 'src/constants/env';
 import { ApiService } from 'src/utils/api.service';
+import { MailJetService } from 'src/thirdParty/mailjet/mail.jet.service';
+import { PAYMENT_RECEIVED } from 'src/constants/strings';
 
 @Injectable()
 export class RiderService {
   constructor(
     private readonly api: ApiService,
     private readonly mongo: MongoService,
+    private readonly mailJet: MailJetService,
   ) {}
 
   async findRide(reqData) {
@@ -389,6 +392,21 @@ export class RiderService {
     if (existingData.paymentStatus == true) {
       return { needRating: false };
     }
+
+    const rideData = await this.mongo.findOne('Ride', {
+      _id: existingData.rideId,
+    });
+    const driverData = await this.mongo.findOne('User', {
+      _id: rideData.driverId,
+    });
+    await this.mailJet.sendMail({
+      email: driverData.email,
+      subject: 'Payment received',
+      htmlContent: PAYMENT_RECEIVED.replace(
+        'PAYMENT_AMOUNT',
+        rideData.total_payment,
+      ).replace('USER_NAME', driverData.name),
+    });
 
     await this.mongo.updateOne(
       'Payment',

@@ -6,7 +6,11 @@ import { HTTPError } from 'src/configs/error';
 import { Env } from 'src/constants/env';
 import { ApiService } from 'src/utils/api.service';
 import { MailJetService } from 'src/thirdParty/mailjet/mail.jet.service';
-import { PAYMENT_RECEIVED } from 'src/constants/strings';
+import {
+  DRIVER_DETAILS_FOR_RIDE,
+  PAYMENT_RECEIVED,
+  RIDE_ACCEPTED_BY_RIDER,
+} from 'src/constants/strings';
 
 @Injectable()
 export class RiderService {
@@ -114,7 +118,42 @@ export class RiderService {
       content: `Your ride from ${rideData.startPlace} to ${rideData.endPlace} has been accepted by the rider !`,
     });
 
+    this.sendEmailToEachOther(userId, rideData.driverId, rideData).catch(
+      (err) => {},
+    );
+
     return { success: true, successMsg: 'Ride has been accepted !' };
+  }
+
+  private async sendEmailToEachOther(driverId, riderId, rideData) {
+    const driverData = await this.mongo.findOne('User', { _id: driverId });
+
+    const riderData = await this.mongo.findOne('User', { _id: riderId });
+
+    // Send email to driver
+    await this.mailJet.sendMail({
+      email: driverData.email,
+      subject: 'Ride Accepted by Rider !',
+      htmlContent: RIDE_ACCEPTED_BY_RIDER.replace('RIDER_NAME', riderData.name)
+        .replace('RIDER_EMAIL', riderData.email)
+        .replace('START_PLACE', rideData.startPlace)
+        .replace('END_PLACE', rideData.endPlace)
+        .replace('DRIVER_NAME', driverData.name),
+    });
+
+    // Send email to rider
+    await this.mailJet.sendMail({
+      email: riderData.email,
+      subject: 'Driver details for the Ride !',
+      htmlContent: RIDE_ACCEPTED_BY_RIDER.replace(
+        'DRIVER_NAME',
+        driverData.name,
+      )
+        .replace('DRIVER_EMAIL', driverData.email)
+        .replace('START_PLACE', rideData.startPlace)
+        .replace('END_PLACE', rideData.endPlace)
+        .replace('RIDER_NAME', riderData.name),
+    });
   }
 
   async myRides(reqData: { userId: any; page: any; pageSize: any }) {

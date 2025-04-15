@@ -330,7 +330,7 @@ export class RiderService {
       },
       reminder_enable: false,
       notes: {},
-      callback_url: 'http://localhost:3000/user/paymentHistory',
+      callback_url: 'https://puller-duo-ui.vercel.app/user/paymentHistory',
       callback_method: 'get',
     };
     const base64Credentials = Buffer.from(

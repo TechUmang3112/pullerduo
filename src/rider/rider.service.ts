@@ -118,7 +118,7 @@ export class RiderService {
       content: `Your ride from ${rideData.startPlace} to ${rideData.endPlace} has been accepted by the rider !`,
     });
 
-    this.sendEmailToEachOther(userId, rideData.driverId, rideData).catch(
+    this.sendEmailToEachOther(rideData.driverId, userId, rideData).catch(
       (err) => {},
     );
 

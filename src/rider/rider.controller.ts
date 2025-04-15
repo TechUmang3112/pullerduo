@@ -40,4 +40,9 @@ export class RiderController {
   async funInitiatePayment(@Body() body) {
     return await this.service.initiatePayment(body);
   }
+
+  @Post('syncPayment')
+  async funSyncPayment(@Body() body) {
+    return await this.service.syncPayment(body);
+  }
 }

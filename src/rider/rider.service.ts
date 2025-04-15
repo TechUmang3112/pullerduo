@@ -326,7 +326,7 @@ export class RiderService {
       },
       reminder_enable: false,
       notes: {},
-      callback_url: 'http://localhost:3000/user/transactionHistory',
+      callback_url: 'http://localhost:3000/user/paymentHistory',
       callback_method: 'get',
     };
     const base64Credentials = Buffer.from(
@@ -356,5 +356,42 @@ export class RiderService {
     );
 
     return { url: response.short_url };
+  }
+
+  async syncPayment(reqData) {
+    const userId = reqData.userId;
+    const paymentLinkId = reqData.paymentLinkId;
+    const paymentId = reqData.paymentId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (!paymentLinkId) {
+      throw HTTPError({ parameter: 'paymentLinkId' });
+    }
+    if (!paymentId) {
+      throw HTTPError({ parameter: 'paymentId' });
+    }
+
+    const existingData = await this.mongo.findOne('Payment', {
+      paymentId: paymentLinkId,
+    });
+    if (!existingData) {
+      throw HTTPError({
+        statusCode: HttpStatusCode.BadRequest,
+        message: 'No payment data found',
+      });
+    }
+
+    if (existingData.paymentStatus == true) {
+      return { needRating: false };
+    }
+
+    await this.mongo.updateOne(
+      'Payment',
+      { _id: existingData._id },
+      { paidId: paymentId, paymentStatus: true },
+    );
+
+    return { needRating: true, rideId: existingData.rideId };
   }
 }

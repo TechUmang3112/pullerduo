@@ -392,6 +392,12 @@ export class RiderService {
       { paidId: paymentId, paymentStatus: true },
     );
 
+    await this.mongo.updateOne(
+      'Ride',
+      { _id: existingData.rideId },
+      { paymentStatus: true, status: '5' },
+    );
+
     return { needRating: true, rideId: existingData.rideId };
   }
 }

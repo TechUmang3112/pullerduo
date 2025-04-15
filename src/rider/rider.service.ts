@@ -261,6 +261,10 @@ export class RiderService {
     if (![1, 2, 3, 4, 5].includes(rating)) {
       throw HTTPError({ value: 'rating' });
     }
+    const feedback = reqData.feedback;
+    if (!feedback) {
+      throw HTTPError({ parameter: 'feedback' });
+    }
 
     const rideData = await this.mongo.findOne('Ride', { _id: rideId });
     if (!rideData) {
@@ -283,9 +287,9 @@ export class RiderService {
       });
     }
 
-    await this.mongo.updateOne('Ride', { _id: rideId }, { rating });
+    await this.mongo.updateOne('Ride', { _id: rideId }, { rating, feedback });
 
-    return { message: 'Rating is done, Thanks !' };
+    return { success: true, successMsg: 'Rating is done, Thanks !' };
   }
 
   async initiatePayment(reqData) {

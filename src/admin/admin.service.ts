@@ -169,6 +169,8 @@ export class AdminService {
       'rideTime',
       'status',
       'total_payment',
+      'rating',
+      'feedback',
     ]);
 
     list.sort((b, a) => a.rideTime.getTime() - b.rideTime.getTime());

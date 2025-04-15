@@ -74,6 +74,9 @@ export class Ride {
   rating: number;
 
   @Prop()
+  feedback: string;
+
+  @Prop()
   initiatedPaymentId: string;
 }
 

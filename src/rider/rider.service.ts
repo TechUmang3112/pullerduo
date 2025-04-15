@@ -145,7 +145,7 @@ export class RiderService {
     await this.mailJet.sendMail({
       email: riderData.email,
       subject: 'Driver details for the Ride !',
-      htmlContent: RIDE_ACCEPTED_BY_RIDER.replace(
+      htmlContent: DRIVER_DETAILS_FOR_RIDE.replace(
         'DRIVER_NAME',
         driverData.name,
       )

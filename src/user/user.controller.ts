@@ -71,4 +71,9 @@ export class UserController {
   async funNotifications(@Query() query) {
     return await this.service.notifications(query);
   }
+
+  @Get('payments')
+  async funPayments(@Query() query) {
+    return await this.service.payments(query);
+  }
 }

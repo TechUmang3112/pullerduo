@@ -343,6 +343,7 @@ export class RiderService {
       amount: rideData.total_payment + 25,
       riderId: userId,
       rideId: rideData._id,
+      driverId: rideData.driverId,
       paymentId: response.id,
       dateTime: new Date(),
     };

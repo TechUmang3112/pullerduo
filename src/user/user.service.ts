@@ -3,6 +3,7 @@ import { MongoService } from 'src/db/mongo';
 import { FileService } from 'src/utils/file.service';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { HTTPError, raiseNotFound } from 'src/configs/error';
+import { HttpStatusCode } from 'axios';
 
 @Injectable()
 export class UserService {
@@ -358,5 +359,39 @@ export class UserService {
     list.sort((b, a) => a.dateTime.getTime() - b.dateTime.getTime());
 
     return { list };
+  }
+
+  async payments(reqData) {
+    const userId = reqData.userId;
+    if (!userId) {
+      throw HTTPError({ parameter: 'userId' });
+    }
+    if (userId.length != 24) {
+      throw HTTPError({ value: 'userId' });
+    }
+
+    const existingData = await this.mongo.findOne('User', { _id: userId });
+    if (!existingData) {
+      throw HTTPError({
+        statusCode: HttpStatusCode.BadRequest,
+        message: 'No user data found !',
+      });
+    }
+
+    const options: any = {};
+    if (existingData.type == '0') {
+      options.riderId = userId;
+    } else if (existingData.type == '1') {
+      options.driverId = userId;
+    }
+    const payments = await this.mongo.findAll('Payment', options, [
+      'amount',
+      'dateTime',
+      'paymentStatus',
+    ]);
+
+    payments.sort((b, a) => a.dateTime.getTime() - b.dateTime.getTime());
+
+    return { list: payments };
   }
 }

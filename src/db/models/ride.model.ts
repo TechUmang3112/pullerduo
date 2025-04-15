@@ -72,6 +72,9 @@ export class Ride {
 
   @Prop()
   rating: number;
+
+  @Prop()
+  initiatedPaymentId: string;
 }
 
 export const RideSchema = SchemaFactory.createForClass(Ride);

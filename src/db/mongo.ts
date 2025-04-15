@@ -17,6 +17,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './models/user.model';
 import { Ride, RideDocument } from './models/ride.model';
 import { FileDoc, FileDocDocument } from './models/file.model';
+import { Payment, PaymentDocument } from './models/payment.model';
 
 @Injectable()
 export class MongoService {
@@ -33,6 +34,8 @@ export class MongoService {
     private readonly rideModel: Model<RideDocument>,
     @InjectModel(Notification.name)
     private readonly notificationModel: Model<NotificationDocument>,
+    @InjectModel(Payment.name)
+    private readonly paymentModel: Model<PaymentDocument>,
   ) {}
 
   async insert(model: string, document: any) {
@@ -103,6 +106,8 @@ export class MongoService {
       return (selectedModel = this.rideModel);
     } else if (model == 'Notification') {
       return (selectedModel = this.notificationModel);
+    } else if (model == 'Payment') {
+      return (selectedModel = this.paymentModel);
     }
 
     return selectedModel;

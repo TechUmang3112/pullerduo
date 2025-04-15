@@ -6,6 +6,7 @@ import { FileDoc, FileDocSchema } from './file.model';
 import { Notification, NotificationSchema } from './notification.model';
 import { GooglePlaces, GooglePlacesSchema } from './google.places.model';
 import { GoogleMeasure, GoogleMeasureSchema } from './google.measure.model';
+import { Payment, PaymentSchema } from './payment.model';
 
 export const mongoModels = [
   MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
@@ -22,4 +23,6 @@ export const mongoModels = [
   ]),
 
   MongooseModule.forFeature([{ name: Ride.name, schema: RideSchema }]),
+
+  MongooseModule.forFeature([{ name: Payment.name, schema: PaymentSchema }]),
 ];

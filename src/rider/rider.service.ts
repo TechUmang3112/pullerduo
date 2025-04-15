@@ -319,7 +319,6 @@ export class RiderService {
       customer: {
         name: existingData.name,
         email: existingData.email,
-        contact: '7490900550',
       },
       notify: {
         sms: false,
@@ -327,7 +326,7 @@ export class RiderService {
       },
       reminder_enable: false,
       notes: {},
-      callback_url: 'https://puller-duo-ui.vercel.app/user/currentRide',
+      callback_url: 'http://localhost:3000/user/transactionHistory',
       callback_method: 'get',
     };
     const base64Credentials = Buffer.from(
@@ -339,6 +338,21 @@ export class RiderService {
     };
 
     const response = await this.api.post(url, body, headers);
+
+    const paymentData = {
+      amount: rideData.total_payment + 25,
+      riderId: userId,
+      rideId: rideData._id,
+      paymentId: response.id,
+      dateTime: new Date(),
+    };
+    const paymentCreatedData = await this.mongo.insert('Payment', paymentData);
+
+    await this.mongo.updateOne(
+      'Ride',
+      { _id: rideData._id },
+      { initiatedPaymentId: paymentCreatedData._id },
+    );
 
     return { url: response.short_url };
   }

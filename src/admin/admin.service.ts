@@ -259,14 +259,14 @@ export class AdminService {
     );
 
     // Get current year total count
-    const currentYearCount = await this.mongo.count('User', {
+    const currentYearCount = await this.mongo.count('Ride', {
       $expr: {
         $gte: [{ $toDate: '$_id' }, currentYearStart],
       },
     });
 
     // Get last year total count for same period
-    const lastYearCount = await this.mongo.count('User', {
+    const lastYearCount = await this.mongo.count('Ride', {
       $expr: {
         $and: [
           { $gte: [{ $toDate: '$_id' }, lastYearStart] },
@@ -321,14 +321,14 @@ export class AdminService {
     );
 
     // Get current month count
-    const currentMonthCount = await this.mongo.count('User', {
+    const currentMonthCount = await this.mongo.count('Ride', {
       $expr: {
         $gte: [{ $toDate: '$_id' }, currentMonthStart],
       },
     });
 
     // Get previous month count for same period
-    const prevMonthCount = await this.mongo.count('User', {
+    const prevMonthCount = await this.mongo.count('Ride', {
       $expr: {
         $and: [
           { $gte: [{ $toDate: '$_id' }, prevMonthStart] },
